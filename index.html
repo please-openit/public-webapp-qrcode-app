@@ -1,0 +1,119 @@
+<html lang="en">
+<head>
+    <meta name="google-signin-client_id" content="578993935893-k192b8n8amkj7ln3hlkmo6s5ap777bhh.apps.googleusercontent.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+        crossorigin="anonymous">
+    <script src="jquery-qrcode-0.14.0.min.js"></script>
+    <style>
+        body,
+    html {
+        height: 100%;
+        margin: 0;
+    }
+
+    .btn {
+      font-size: xx-large;
+      margin-top: 50px;
+    }
+
+    .bgimg {
+        background-image: url('header.jpg');
+        height: 100%;
+        background-position: center;
+        background-size: cover;
+        position: relative;
+        color: white;
+        font-size: 15px;
+    }
+
+    .bottomleft {
+        position: absolute;
+        bottom: 0;
+        left: 16px;
+    }
+
+    .vertical-center {
+        min-height: 100%;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+    }
+.col-centered{
+    float: none;
+    margin: 0 auto;
+}
+</style>
+</head>
+<body>
+    <div class="bgimg">
+        <div class="vertical-center">
+            <div class="container" id="logindiv">
+                <div class="row">
+                    <div class="col-lg-4 col-md-12 text-center">
+                        <div class="btn btn-xl g-signin2" data-onsuccess="onSignIn"><input type="button" value="login"></div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="container-fluid" id="loggedindiv">
+                <div class="row">
+                    <div class="col-xs-2">
+                        <div id="userimg"></div>
+                    </div>
+                    <div class="col-xs-10">
+                        <div id="user"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4 col-md-12 text-center">
+                        <div id="qrcode" style="margin-top: 10px"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4 col-md-12 text-center">
+                        <input class="btn btn-danger btn-xl" type="button" value="logout" onclick="signOut();" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="bottomleft">
+            <p>&copy; 2019 please-open.it</p>
+        </div>
+    </div>
+</body>
+<script>
+    $('#loggedindiv').hide();
+
+    function onSignIn(googleUser) {
+        var profile = googleUser.getBasicProfile();
+        $("#qrcode").html("");
+        $('#logindiv').hide();
+        $('#loggedindiv').show();
+        $('#qrcode').qrcode({
+            render: 'canvas',
+            background: '#FFFFFF',
+            size: 300,
+            ecLevel: 'L',
+            text: googleUser.Zi.access_token
+        });
+        userAsHTML = "<h3>" + profile.getName() + "</h3>" + profile.getEmail();
+        $("#user").html(userAsHTML);
+        $("#userimg").html("<img src='" + profile.getImageUrl() + "'/>");
+    }
+
+    function signOut() {
+        var auth2 = gapi.auth2.getAuthInstance();
+        auth2.signOut().then(function () {
+            console.log('User signed out.');
+        });
+        $("#qrcode").html("");
+        $("#user").html("");
+        $("#userimg").html("");
+        $('#logindiv').show();
+        $('#loggedindiv').hide();
+    }
+</script>
+</html>
